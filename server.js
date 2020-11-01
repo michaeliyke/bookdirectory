@@ -60,6 +60,8 @@ app.use(session({
   }
 }));
 
+app.use(express.static("public"));
+
 /*Let's create some custom middle wares*/
 const redirectLogin = (request, response, next) => {
   if (!request.session.userId) {
@@ -109,6 +111,7 @@ app.post("/login", redirectHome, (request, response) => {
 
 app.post("/register", redirectHome, (request, response) => {
   const {name, email, password} = request.body;
+  console.log(name, email, password)
   if (name && email && password) {
     const exists = users.some((user) => {
       return user.email == email;
@@ -143,7 +146,7 @@ app.get("/", (request, response, next) => {
   const {userId} = request.session;
   // const userId = 1;
 
-  console.log(request.session);
+  // console.log(request.session);
   response.sendFile(path.join(`${__dirname}/public/home.html`));
 });
 
