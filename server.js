@@ -106,7 +106,7 @@ app.post("/login", redirectHome, (request, response) => {
       return response.redirect("/home");
     }
   }
-  redirect("/login");
+  response.redirect("/login");
 });
 
 app.post("/register", redirectHome, (request, response) => {
