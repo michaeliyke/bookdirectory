@@ -2,23 +2,25 @@
   "name": "Experiments",
   "version": "1.0.0",
   "description": "Experiment space for Node development.",
-  "main": "main3.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon main3 && mongod",
+    "start": "nodemon server && mongod",
     "serve": "npm start",
-    "watch": "nodemon main3 && mongod"
+    "watch": "nodemon server && mongod"
   },
   "keywords": [],
-  "author": "michael c. iyke", 
+  "author": "michael c. iyke",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1",
-    "mongoose": "^5.10.9",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.1",
     "connect-mongo": "^1.3.2",
+    "express": "^4.17.1",
     "express-session": "^1.15.2",
-    "nodemon": "^1.11.0"
+    "mongoose": "^5.10.9",
+    "nodemon": "^1.19.4",
+    "to": "^0.2.9",
+    "update": "^0.7.4"
   }
 }
