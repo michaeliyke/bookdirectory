@@ -1,48 +1,29 @@
-const path = require("path");
 const express = require("express");
+const mongoose = require("mongoose");
 const session = require("express-session");
+const MongoStore = require("connect-mongo")(session);
+const path = require("path");
+const multer = require("multer");
+const {log} = console;
+const l = log;
+
+const app = express();
+
 const bodyParser = require("body-parser");
-const TWO_HOURS = (1000 * 60 * 60) * 2;
+const MAX_AGE = (1000 * 60 * 60) * 24 * 30; //30 days
 
 
-const {PORT = 3000, SESSION_NAME = "sid", SESSION_SECRETE = "ssh!quiet,it\'asecret", SESSION_LIFETIME = TWO_HOURS, NODE_ENV = "development"} = process.env
+const {PORT = 3000, SESSION_NAME = "sid", SESSION_SECRETE = "ssh!quiet,it\'asecret", SESSION_LIFETIME = MAX_AGE, NODE_ENV = "development"} = process.env
 
 const IN_PROD = NODE_ENV === "production";
 
-const users = [
-  {
-    id: 1,
-    name: "Alex",
-    email: "alex@gmail.com",
-    password: "secret"
-  },
-  {
-    id: 2,
-    name: "Max",
-    email: "max@gmail.com",
-    password: "secret"
-  },
-  {
-    id: 3,
-    name: "Alex",
-    email: "alex @gmail.com",
-    password: "secret"
-  },
-  {
-    id: 4,
-    name: "root",
-    email: "root@g.c",
-    password: "test"
-  },
-  {
-    id: 5,
-    name: "Tester",
-    email: "test@test.test",
-    password: "test"
-  }
-];
+mongoose.connect("mongodb://127.0.0.1:27017/directory", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true
+});
 
-const app = express();
+const db = mongoose.connection;
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -57,97 +38,31 @@ app.use(session({
     maxAge: SESSION_LIFETIME,
     sameSite: true,
     secure: IN_PROD
-  }
+  },
+  store: new MongoStore({
+    mongooseConnection: db
+  })
 }));
 
-app.use(express.static("public"));
 
-/*Let's create some custom middle wares*/
-const redirectLogin = (request, response, next) => {
-  if (!request.session.userId) {
-    // User is not logged in
-    response.redirect("/login");
-  } else {
-    next();
-  }
-};
+// Serve static files from the public directory
+app.use(express.static(`${__dirname}/public`));
 
-/*Let's create some custom middle wares*/
-const redirectHome = (request, response, next) => {
-  if (request.session.userId) {
-    // User is not logged in
-    response.redirect("/home");
-  } else {
-    next();
-  }
-};
+// ROUTER
+app.use("*", require("./router/navigation.routes"));
 
-app.get("/home", redirectLogin, (request, response) => {
-  response.sendFile(path.join(`${__dirname}/public/dashboard.html`));
+
+// Proof againt 404
+app.use((request, response, next) => {
+  const error = new Error("File Not Found");
+  error.status = 404;
+  next(error);
 });
 
-app.get("/login", redirectHome, (request, response) => {
-  response.sendFile(path.join(`${__dirname}/public/login.html`));
-});
-
-app.get("/register", redirectHome, (request, response) => {
-  response.sendFile(path.join(`${__dirname}/public/register.html`));
-});
-
-app.post("/login", redirectHome, (request, response) => {
-  const {email, password} = request.body;
-  if (email && password) {
-    const user = users.find((user) => {
-      return user.email == email && user.password == password;
-    });
-
-    if (user) {
-      request.session.userId = user.id;
-      return response.redirect("/home");
-    }
-  }
-  response.redirect("/login");
-});
-
-app.post("/register", redirectHome, (request, response) => {
-  const {name, email, password} = request.body;
-  console.log(name, email, password)
-  if (name && email && password) {
-    const exists = users.some((user) => {
-      return user.email == email;
-    });
-    if (!exists) {
-      const user = {
-        id: users.length + 1,
-        name: name,
-        email: email,
-        password: password
-      };
-      users.push(user);
-      request.session.userId = user.id
-      return response.redirect("/home");
-    }
-  }
-  response.redirect("/register");
-});
-
-app.post("/logout", redirectLogin, (request, response) => {
-  request.session.destroy((error) => {
-    if (error) {
-      return response.redirect("/home");
-    }
-    response.clearCookie(SESSION_NAME);
-    response.redirect("/login");
-  });
-});
-
-app.get("/", (request, response, next) => {
-
-  const {userId} = request.session;
-  // const userId = 1;
-
-  // console.log(request.session);
-  response.sendFile(path.join(`${__dirname}/public/home.html`));
+// LAST CALL TO MAKE
+app.use((error, request, response) => {
+  response.status(error.status || 500);
+  response.send(error && error.message ? error.message : "Internal server error");
 });
 
 app.listen(PORT, () => {
