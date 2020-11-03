@@ -49,7 +49,7 @@ app.use(session({
 app.use(express.static(`${__dirname}/public`));
 
 // ROUTER
-app.use("*", require("./router/navigation.routes"));
+app.use("/", require("./router/navigation.routes"));
 
 
 // Proof againt 404

@@ -1,5 +1,5 @@
 // function(exports, module, require, __filename, __dirname) {
-
+const User = require("../models/user.model");
 const path = require("path");
 const express = require("express");
 const router = express.Router();
@@ -23,13 +23,13 @@ router.get("/register", redirectHome, (request, response) => {
 });
 
 // users.login
-router.post("/login", redirectHome, require("../models/user.login"));
+router.post("/login", require("../models/user.login"));
 
 // users.register
-router.post("/register", redirectHome, require("../models/user.registration"));
+router.post("/register", redirectHome, redirectRegistered, require("../models/user.registration"));
 
 // users.logout
-router.post("/logout", redirectLogin, require("../models/user.logout"));
+router.post("/logout", require("../models/user.logout"));
 
 function requiresLogin(request, response, next) {
   if (request.session && request.session.sessionId) {
@@ -56,8 +56,24 @@ function redirectLogin(request, response, next) {
 /*Let's create some custom middle wares*/
 function redirectHome(request, response, next) {
   if (request.session.userId) {
-    // User is not logged in
+    // User is logged in
     response.redirect("/home");
+  } else {
+    next();
+  }
+}
+
+
+async function redirectRegistered(request, response, next) {
+  const {email} = request.body;
+  const userExists = await User.exists(email);
+  if (userExists) {
+    // const error = new Error("User already exists!");
+    // error.status = 400;
+    // return response.sendFile(path.resolve("./", "public/register.html"));
+    response.redirect("back");
+    response.end();
+  // response.redirect(router.get("referer"))
   } else {
     next();
   }

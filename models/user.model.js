@@ -1,7 +1,8 @@
-const {Schema} = require("mongoose");
 const bcrypt = require("bcrypt");
+const mongoose = require("mongoose");
+const {log} = console;
 
-const UserModel = new Schema({
+const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
@@ -24,7 +25,7 @@ const UserModel = new Schema({
     type: String,
     default: ""
   },
-  othername: {
+  othernames: {
     type: String,
     default: ""
   },
@@ -34,7 +35,10 @@ const UserModel = new Schema({
   }
 });
 
-UserModel.pre("save", function(next) {
+
+
+
+UserSchema.pre("save", function(next) {
   const user = this;
   bcrypt.hash(user.password, 10, function(error, hash) {
     if (error) {
@@ -45,15 +49,15 @@ UserModel.pre("save", function(next) {
   });
 });
 
-UserModel.statics.exists = async function exists(email, fn) {
-  return await UserModel.findOne({
+UserSchema.statics.exists = async function exists(email, fn) {
+  return await User.findOne({
       email
     }).exec();
 };
 
 
-UserModel.statics.authenticate = function authenticate(email, password, fn) {
-  UserModel.findOne({
+UserSchema.statics.authenticate = function authenticate(email, password, fn) {
+  User.findOne({
     email: email
   }).exec((error, user) => {
     if (error) {
@@ -73,4 +77,5 @@ UserModel.statics.authenticate = function authenticate(email, password, fn) {
   });
 };
 
-module.exports = mongoose.model("UserModel", UserModel);
+const User = mongoose.model("User", UserSchema);
+module.exports = User;
