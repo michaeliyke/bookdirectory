@@ -69,9 +69,11 @@ UserSchema.statics.authenticate = function authenticate(email, password, fn) {
     }
     bcrypt.compare(password, user.password, (error, result) => {
       if (result === true) {
+        user.authenticated = true;
         return fn(null, user);
       } else {
-        return fn();
+        user.authenticated = false;
+        return fn(null, user);
       }
     });
   });

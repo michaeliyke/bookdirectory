@@ -20,15 +20,15 @@
         <span class="login100-form-title p-b-41">
           Account Login
         </span>
-        <form method="POST" action="/login" class="login100-form validate-form p-b-33 p-t-5">
+        <form autocomplete method="POST" action="/login" class="login100-form validate-form p-b-33 p-t-5">
 
           <div class="wrap-input100 validate-input" data-validate = "Enter a valid email address">
-            <input class="input100" type="text" name="email" placeholder="Email address">
+            <input autocomplete class="input100" type="text" name="email" placeholder="Email address">
             <span class="focus-input100" data-placeholder="&#xe82a;"></span>
           </div>
 
           <div class="wrap-input100 validate-input" data-validate="Enter password">
-            <input class="input100" type="password" name="password" placeholder="Password">
+            <input autocomplete="false" class="input100" type="password" name="password" placeholder="Password">
             <span class="focus-input100" data-placeholder="&#xe80f;"></span>
           </div>
 
@@ -47,8 +47,10 @@
   </div>
 
   <script src="assets/js/vendor/jquery/jquery-3.2.1.min.js"></script>
-  <script src="assets/js/vendor/bootstrap/js/bootstrap.min.js"></script>
+  <!-- <script src="assets/js/vendor/bootstrap/js/popper.js"></script> -->
+  <!-- <script src="assets/js/vendor/bootstrap/js/bootstrap.min.js"></script> -->
   <script src="assets/js/login.js"></script>
+  <script src="assets/js/forms.js"></script>
 
   <div id="dropDownSelect1"></div>
 

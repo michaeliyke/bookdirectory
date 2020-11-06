@@ -23,7 +23,7 @@ router.get("/register", redirectHome, (request, response) => {
 });
 
 // users.login
-router.post("/login", require("../models/user.login"));
+router.post("/login", redirectHome, require("../models/user.login"));
 
 // users.register
 router.post("/register", redirectHome, redirectRegistered, require("../models/user.registration"));
@@ -56,8 +56,19 @@ function redirectLogin(request, response, next) {
 /*Let's create some custom middle wares*/
 function redirectHome(request, response, next) {
   if (request.session.userId) {
-    // User is logged in
-    response.redirect("/home");
+    // User is logged in 
+    if (request.body && "email" in request.body && "password" in request.body) {
+      response.setHeader("Content-Type", "application/json");
+      response.end(`{
+        'authorized': true,
+        'email': 'Unavailable'
+        'authorization': '${request.session.userId}',
+        'route': '/home'
+      }`)
+    } else {
+      response.redirect("/home");
+    }
+
   } else {
     next();
   }

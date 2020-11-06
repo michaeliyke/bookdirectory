@@ -46,7 +46,15 @@ app.use(session({
 
 
 // Serve static files from the public directory
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(`${__dirname}/public`, {
+  dotfiles: "ignore",
+  etag: false,
+  extensions: ["htm", "html"],
+  index: false,
+  setHeaders(response, path, stat) {
+    response.set("x-timestamp", Date.now())
+  }
+}));
 
 // ROUTER
 app.use("/", require("./router/navigation.routes"));
