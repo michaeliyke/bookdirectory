@@ -21,7 +21,9 @@
           Account Login
         </span>
         <form autocomplete method="POST" action="/login" class="login100-form validate-form p-b-33 p-t-5">
-
+        <div>
+          <p id="error-display"></p>
+        </div>
           <div class="wrap-input100 validate-input" data-validate = "Enter a valid email address">
             <input autocomplete class="input100" type="text" name="email" placeholder="Email address">
             <span class="focus-input100" data-placeholder="&#xe82a;"></span>
@@ -53,6 +55,21 @@
   <script src="assets/js/forms.js"></script>
 
   <div id="dropDownSelect1"></div>
-
+  <style>
+    #error-display{
+    display: none;
+    color: #8c0400;
+    font-family: caption;
+    font-size: 1.1em;
+    margin: 1em auto;
+    width: 90%;
+    line-height: 1.4;
+    background-color: #f0f0f0;
+    text-align: center;
+    border-radius: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  </style>
 </body>
 </html>

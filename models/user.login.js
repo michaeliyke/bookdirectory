@@ -10,36 +10,28 @@ module.exports = function login(request, response, next) {
   log(details)
   User.authenticate(email, password, (error, user) => {
     // response.setHeader("Content-Type", "application/json");
+    const data = {
+      authorized: false,
+      email: email,
+      route: "/login",
+      status: 200
+    };
     if (user && user.authenticated === true) {
       request.session.userId = user._id;
-      const authorization = {
-        authorized: true,
-        email: email,
-        authorization: user._id,
-        route: "/home"
-      };
-      response.status(200).json(authorization);
-      response.end();
+      data.authorized = true;
+      data.authorization = user._id;
+      data.route = "/home";
+      response.status(200).json(data);
     } else if (user) {
-      response.status(200).json({
-        status: 200,
-        athorized: false,
-        email: email,
-        errorMessage: "Incorrect password, did you forget your password?",
-        route: "/login"
-      });
-      response.end()
+      data.errorMessage = "Incorrect password, did you forget your password?";
+      response.status(200).json(data);
     } else {
-      const error = {
-        status: 404,
-        authorized: false,
-        email: email,
-        errorMessage: `Account with email ${email} does not exist, would you like to create it?`,
-        route: "/register"
-      };
-      response.status(200).json(error);
-      response.end();
+      data.status = 404;
+      data.errorMessage = `Account with email ${email} does not exist, would you like to create it?`;
+      data.route = "/register";
+      response.status(200).json(data);
     }
+    response.end();
 
   });
 };

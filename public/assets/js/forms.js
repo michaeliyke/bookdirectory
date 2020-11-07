@@ -29,6 +29,10 @@
     return formData;
   }
 
+  function toss(msg) {
+    jQuery("#error-display").html(msg).slideDown(800).delay(8000).slideUp(800);
+  }
+
   jQuery(function($) {
 
     const a = alert;
@@ -50,28 +54,37 @@
               email: formData.email,
           });
           if (invalidForm) {
-            console.error("Validation error. \n Please input the correct values");
+            toss("Validation error. \n Please input the correct values");
             return
           }
         } catch (e) {
-          console.error(err);
+          toss("Error: Please contact admin");
           return
         }
-        jQuery.ajax({
+        const ajax = jQuery.ajax({
           url: "/login",
           type: "POST",
           dataType: "json",
           data: formData
-        })
-          .done(function() {
-            console.log("success");
-          })
-          .fail(function() {
-            console.log("error");
-          })
-          .always(function() {
-            console.log("complete");
-          });
+        });
+
+        ajax.done(function(data) {
+          if (data.authorized === true && data.authorization) {
+            location.href = data.route;
+          // `${window.location.host}/${data.route}`.replace("//", "/");
+          } else {
+            toss(data.errorMessage);
+            console.error("Else", data.errorMessage);
+          }
+        });
+
+        ajax.fail(function(error) {
+          toss("Error: Please try again.");
+        });
+
+        ajax.always(function() {
+          console.log("complete");
+        });
 
 
       });

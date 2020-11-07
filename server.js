@@ -61,18 +61,23 @@ app.use("/", require("./router/navigation.routes"));
 
 
 // Proof againt 404
+const fall_through_list = ["/favicon.ico"];
 app.use((request, response, next) => {
+  log(".originalUrl", request.originalUrl);
   const error = new Error("File Not Found");
   error.status = 404;
-  next(error);
+  // request.baseUrl
+  // request.originalUrl
+  // request.path
+  fall_through_list.indexOf(request.originalUrl) != -1 ? response.end() : next(error);
 });
 
-// LAST CALL TO MAKE
+// LAST CALL TO MAKE - Error handling middle ware
 app.use((error, request, response) => {
   response.status(error.status || 500);
   response.send(error && error.message ? error.message : "Internal server error");
 });
 
 app.listen(PORT, () => {
-  console.log("http://127.0.0.1:3000")
+  log("http://127.0.0.1:3000")
 });

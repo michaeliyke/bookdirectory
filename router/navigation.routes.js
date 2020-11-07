@@ -58,13 +58,13 @@ function redirectHome(request, response, next) {
   if (request.session.userId) {
     // User is logged in 
     if (request.body && "email" in request.body && "password" in request.body) {
-      response.setHeader("Content-Type", "application/json");
-      response.end(`{
-        'authorized': true,
-        'email': 'Unavailable'
-        'authorization': '${request.session.userId}',
-        'route': '/home'
-      }`)
+      response.status(200).json({
+        authorized: true,
+        email: "Unavailable",
+        authorization: request.session.userId,
+        route: "/home"
+      });
+      response.end()
     } else {
       response.redirect("/home");
     }
