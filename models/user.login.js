@@ -9,7 +9,7 @@ module.exports = function login(request, response, next) {
 
   log(details)
   User.authenticate(email, password, (error, user) => {
-    // response.setHeader("Content-Type", "application/json");
+    //response.setHeader("Content-Type", "application/json");
     const data = {
       authorized: false,
       email: email,
@@ -21,13 +21,14 @@ module.exports = function login(request, response, next) {
       data.authorized = true;
       data.authorization = user._id;
       data.route = "/home";
+      data.successMessage = "Login successful. <br /> Redirecting to your dashboard. . ";
       response.status(200).json(data);
     } else if (user) {
       data.errorMessage = "Incorrect password, did you forget your password?";
       response.status(200).json(data);
     } else {
       data.status = 404;
-      data.errorMessage = `Account with email ${email} does not exist, would you like to create it?`;
+      data.errorMessage = `An account with (<b>${email}</b>) does not exist, would you like to <a href="/register">create it</a>?`;
       data.route = "/register";
       response.status(200).json(data);
     }

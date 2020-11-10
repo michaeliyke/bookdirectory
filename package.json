@@ -1,5 +1,5 @@
 {
-  "name": "Experiments",
+  "name": "experiments",
   "version": "1.0.0",
   "description": "Experiment space for Node development.",
   "main": "server.js",

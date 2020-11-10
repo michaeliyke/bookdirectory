@@ -1,0 +1,14 @@
+#error-display{
+    display: none;
+    color: #8c0400;
+    font-family: caption;
+    font-size: 1.1em;
+    margin: 1em auto;
+    width: 90%;
+    line-height: 1.4;
+    background-color: #f0f0f0;
+    text-align: center;
+    border-radius: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }

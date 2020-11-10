@@ -4,10 +4,13 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const path = require("path");
 const multer = require("multer");
+const nocache = require("nocache");
 const {log} = console;
 const l = log;
 
 const app = express();
+
+app.use(nocache());
 
 const bodyParser = require("body-parser");
 const MAX_AGE = (1000 * 60 * 60) * 24 * 30; //30 days
@@ -58,18 +61,19 @@ app.use(express.static(`${__dirname}/public`, {
 
 // ROUTER
 app.use("/", require("./router/navigation.routes"));
-
-
 // Proof againt 404
-const fall_through_list = ["/favicon.ico"];
+const fall_through_list = ["/favicon.ico", ".map"];
 app.use((request, response, next) => {
-  log(".originalUrl", request.originalUrl);
+  // log(".originalUrl", request.originalUrl);
   const error = new Error("File Not Found");
   error.status = 404;
-  // request.baseUrl
-  // request.originalUrl
-  // request.path
-  fall_through_list.indexOf(request.originalUrl) != -1 ? response.end() : next(error);
+  // request.baseUrl // request.originalUrl // request.path
+  for (const string of fall_through_list) {
+    if (string == request.originalUrl || string == path.extname(request.originalUrl)) {
+      return response.end();
+    }
+  }
+  next(error);
 });
 
 // LAST CALL TO MAKE - Error handling middle ware

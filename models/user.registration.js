@@ -6,28 +6,25 @@ module.exports = async function register(request, response, next) {
   // User.create(details).then(success).catch(error);
   const {name, email, password, repassword} = request.body;
 
-  if (!(name && email && password && repassword)) {
-    const error = new Error("Please provide all required details.");
-    error.status = 400;
-    response.send(error);
-    response.redirect("/register");
-  }
-  
+  const data = {
+    authorized: false,
+    email: email,
+    route: null,
+    errorMessage: "Please provide all required details.",
+    status: 400
+  };
 
-  const userExists = await User.exists(email);
-  if (userExists) {
-    // const error = new Error("User already exists!");
-    // error.status = 400;
-    // response.send(error);
-    console.log("userExists: reg")
-    return response.redirect("/login");
+  if (!(name && email && password && repassword)) {
+    response.status(200).json(data);
+    response.end();
+    return
   }
 
   if (password !== repassword) {
-    const error = new Error("Passwords do not match.");
-    error.status = 400;
-    response.send("Passwords do not match.");
-    next(error);
+    data.errorMessage = "Passwords do not match.";
+    response.status(200).json(data);
+    response.end();
+    return
   }
   const details = {
     name,
@@ -36,17 +33,21 @@ module.exports = async function register(request, response, next) {
   };
 
   const names = name.split(" ");
-  if (name.length > 1) {
+  if (names.length > 1) {
     details.firstname = names[0];
     details.lastname = names[1];
     details.othernames = names.splice(2).join(" ");
   }
-  // console.log(details)
-  // return process.exit(0);
 
   const user = await User.create(details);
   request.session.userId = user._id;
-  return response.redirect("/home");
+  data.authorized = true;
+  data.authorization = user._id;
+  data.successMessage = "You have been registered successfully";
+  data.status = 200;
+  data.route = "/dashboard";
+  response.json(data);
+  response.end();
 };
 // return module.exports
 // }
