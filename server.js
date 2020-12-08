@@ -1,4 +1,5 @@
 const express = require("express");
+const cookiePaser = require("cookie-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
@@ -10,7 +11,9 @@ const l = log;
 
 const app = express();
 
-app.use(nocache());
+// app.use(cookiePaser());
+
+// app.use(nocache());
 
 const bodyParser = require("body-parser");
 const MAX_AGE = (1000 * 60 * 60) * 24 * 30; //30 days

@@ -3,6 +3,11 @@
 
   jQuery(function($) {
 
+    const cookies = map_cookies();
+    if (cookies.checkCookie("errorMessage")) {
+      toss(cookies.getCookie("errorMessage"));
+    }
+
 
     const details = {
       types: ["text", "password", "email"],
@@ -116,6 +121,34 @@
 
   function toss(msg) {
     jQuery("#error-display").html(msg).slideDown(800).delay(8000).slideUp(800);
+  }
+
+  function map_cookies() {
+    const records = document.cookie.split(";");
+
+    const cookies = {
+
+      setCookie(key, value, days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = `${key + "=" + value + "; expires=" + date.toUTCString()}; path=/`;
+      },
+
+      getCookie(key) {
+        return this[key];
+      },
+
+      checkCookie(key) {
+        return key in this;
+      }
+
+    };
+
+    for (const record of records) {
+      let [key, value] = record.split("=");
+      cookies[key.trim()] = value.trim();
+    }
+    return cookies;
   }
 
 }(window, document, jQuery))

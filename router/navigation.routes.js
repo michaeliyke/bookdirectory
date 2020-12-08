@@ -5,22 +5,22 @@ const path = require("path");
 const express = require("express");
 const router = express.Router();
 const {log} = console;
+const route_transport = require("./route.transport");
 
 router.get("/", (request, response, next) => {
   const {userId} = request.session;
-  response.sendFile(path.resolve("./", "public/home.html"));
+  response.cookie("session_id", "123456");
+  response.sendFile(path.resolve("./", "public/www.html"), route_transport);
 });
 
 // users.login
 router.post("/login", redirectHome, require("../models/user.login"));
-// router.post("/login", redirectHome, require("../models/user.login"));
 router.get("/login", redirectHome, (request, response) => {
   response.sendFile(path.resolve("./", "public/user.login.html"));
 });
 
 router.post("/register", redirectHome, redirectRegistered, require("../models/user.registration"));
 router.get("/register", redirectHome, (request, response) => {
-  log(request.originalUrl)
   response.sendFile(path.resolve("./", "public/user.register.html"));
 });
 // register
@@ -29,6 +29,7 @@ router.get("/register", redirectHome, (request, response) => {
 router.post("/logout", require("../models/user.logout"));
 router.get("/dashboard", requiresLogin, (request, response, next) => {
   const {userId} = request.session;
+  response.cookie("sername", "MichaelIyke");
   response.sendFile(path.resolve("./", "public/user.dashboard.html"));
 });
 
@@ -36,7 +37,6 @@ router.get("/dashboard", requiresLogin, (request, response, next) => {
 
 /*Let's create some custom middle wares*/
 function redirectHome(request, response, next) {
-  log("Right here")
   if (request.session.userId) {
     if (request.body && "email" in request.body && "password" in request.body) {
       response.status(200).json({
@@ -46,7 +46,7 @@ function redirectHome(request, response, next) {
         authorization: request.session.userId,
         route: "/home"
       });
-      response.end()
+      response.end();
     } else {
       response.redirect("/home");
     }
@@ -59,8 +59,10 @@ function requiresLogin(request, response, next) {
   if (request.session && request.session.sessionId) {
     return next();
   } else {
+    const cookies = {
+      "errorMessage": "You must be logged in to view this page"
+    };
     response.redirect("/login");
-    log("You must be logged in to view this page");
   }
 }
 
