@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server && mongod",
-    "serve": "npm start",
+    "start": "node index",
+    "serve": "nodemon server && mongod",
     "watch": "nodemon server && mongod"
   },
   "keywords": [],
@@ -22,5 +22,8 @@
     "nodemon": "^1.19.4",
     "to": "^0.2.9",
     "update": "^0.7.4"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0"
   }
 }
