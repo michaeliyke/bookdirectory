@@ -101,5 +101,8 @@
  {"id":99,"author":"Andalax","book-title":"Sylvicapra grimma","ISBN":"8494742043"},
  {"id":100,"author":"Okeys Ajogwuoke Iyke","book-title":"The Able Minister","ISBN":"2004207782"},
  {"id":101,"author":"Michael C. Iyke","book-title":"Walking with God And by GOD","ISBN":"2004207780"},
- {"id":102,"author":"Michael C. Iyke","book-title":"The Art of PRAYER","ISBN":"2004207781"} 
+ {"id":102,"author":"Michael C. Iyke","book-title":"The Art of PRAYER","ISBN":"2004207781"},
+ {"id":103,"author":"David Gourley and Brian Totty","book-title":"HTTP The Definitive Guide","ISBN":"1565925092"},
+ {"id":104,"author":"Loiane Groner","book-title":"JavaScript Data Structures and Algorithms","ISBN":"9781788623872"},
+ {"id":105,"author":"Stephen Ludin and Javier Garza","book-title":"Learning HTTP/2","ISBN":"9781491962442"} 
 ]
