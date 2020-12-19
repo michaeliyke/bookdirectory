@@ -1,4 +1,0 @@
-/*
-Address situations where:
-    delete at arbitrary position breaks seriality
- */
