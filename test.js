@@ -6,8 +6,7 @@ const assert = require("assert");
 const url = "mongodb://127.0.0.1:27017";
 const dbName = "json";
 
-MongoClient.connect(url, (error, client) => {
-  assert.equal(error, null);
+MongoClient.connect(url).then((client) => {
   log("Connected correctly to server");
   const db = client.db(dbName);
   const row = {
@@ -17,25 +16,36 @@ MongoClient.connect(url, (error, client) => {
     "ISBN": "4110231107"
   }
 
-  dbOperations.insertDocument(db, row, "books", (result) => {
-    dbOperations.findDocuments(db, "books", (result) => {
-      const update = {
-        "book-title": "The Art of Prayer"
-      };
-      const filter = {
-        "ISBN": "4110231107"
-      };
+  dbOperations.insertDocument(db, row, "books").then((result) => {
+    log(result);
+    return dbOperations.findDocuments(db, "books");
+  }).then((result) => {
+    log(result);
+    const update = {
+      "book-title": "The Art of Prayer"
+    };
 
-      dbOperations.updateDocument(db, filter, update, "books", (result) => {
-        dbOperations.findDocuments(db, "books", a => a);
-        dbOperations.removeDocument(db, filter, "books", (result) => {
-          db.dropCollection("books", (result) => {
-            log("ALL DONE!!!");
-            client.close();
-          });
-        });
-      });
-    });
-  });
+    const filter = {
+      "ISBN": "4110231107"
+    };
 
-});
+    return dbOperations.updateDocument(db, filter, update, "books");
+  }).then((result) => {
+    log(result);
+    const filter = {
+      "ISBN": "4110231107"
+    };
+    dbOperations.findDocuments(db, "books", a => log(a));
+
+    return dbOperations.removeDocument(db, filter, "books");
+  }).then((result) => {
+    log(result);
+
+    return db.dropCollection("books");
+  }).then((result) => {
+    log(result);
+    log("All DONE!!!");
+    client.close();
+  }).catch(error => log(error));
+
+}).catch(error => log(error));

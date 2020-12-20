@@ -8,17 +8,11 @@ exports = {
    * @param  {object}   document   document object
    * @param  {string}   collectionName Name of collection
    * @param  {Function} cb         Callback function
-   * @return {object}         Returns this for chanining
+   * @return {promise}         Returns a Promise
    */
   insertDocument(db, document, collectionName, cb) {
     const collection = db.collection(collectionName);
-    collection.insert(document, (error, result) => {
-      assert.equal(error, null);
-      log("Inserrted:", result.result.n,
-        " document into the collection ", collectionName);
-      cb(result);
-    });
-    return this;
+    return collection.insertOne(document);
   },
 
   /**
@@ -26,16 +20,11 @@ exports = {
    * @param  {object}   db  The db driver object
    * @param  {string}   collectionName  Name of collection
    * @param  {Function} cb  The callback function
-   * @return {object}  Returns this object
+   * @return {promise}  Returns a Promise
    */
   findDocuments(db, collectionName, cb) {
     const collection = db.collection(collectionName);
-    collection.find({}).toArray((error, documents) => {
-      assert.equal(error, null);
-      log("Found: ", documents);
-      cb(documents);
-    });
-    return this;
+    return collection.find({}).toArray();
   },
 
   /**
@@ -45,19 +34,14 @@ exports = {
    * @param  {object}   update         Update spec object
    * @param  {string}   collectionName Name
    * @param  {Function} cb             Callback function
-   * @return {object}                  returns this
+   * @return {promise}                 Returns a Promise
    */
   updateDocument(db, document, update, collectionName, cb) {
     const collection = db.collection(collectionName);
     const options = {
       $set: update
     };
-    collection.updateOne(document, options, null, (e, r) => {
-      assert.equal(e, null);
-      log("Updated the document, ", document);
-      cb(r);
-    });
-    return this;
+    return collection.updateOne(document, options, null);
   },
 
   /**
@@ -66,16 +50,11 @@ exports = {
    * @param  {object}   document       Filter object
    * @param  {string}   collectionName Name
    * @param  {Function} cb             Callback
-   * @return {object}                  returns this
+   * @return {promise}                 Returns a Promise
    */
   removeDocument(db, document, collectionName, cb) {
     const collection = db.collection(collectionName);
-    collection.deleteOne(document, (error, result) => {
-      assert.equal(error, null);
-      log("Removed the document, ", document);
-      cb(result);
-    });
-    return this;
+    return collection.deleteOne(document);
   },
 };
 
