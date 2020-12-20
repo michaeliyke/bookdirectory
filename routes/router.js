@@ -8,20 +8,21 @@ router.use(bodyParser.json());
 let ops = null;
 
 router.all(/\/books\/{0,1}/, GenericHandler);
-function GenericHandler(request, response, next){
+function GenericHandler(request, response, next) {
   ops = require("../utils/book-operations");
   next();
 }
 
 
-router.get(/^\/books\/{0,1}$/, (request, response, next) =>{
+router.get(/^\/books\/{0,1}$/, (request, response, next) => {
   const ret = ops.getAllBooks();
   response.json(ret);
   response.end();
 });
+//{"id":108,"author":"Osy Ugwu","book-title":"The Praying Mantis","ISBN":"1992105350"} 
 
 
-router.get("/books/:ID", (request, response, next) =>{
+router.get("/books/:ID", (request, response, next) => {
   const book = ops.getBook(request.params.ID);
   log(request.params)
   if (!book) {
@@ -33,12 +34,12 @@ router.get("/books/:ID", (request, response, next) =>{
 });
 
 
-router.post(/^\/books\/{0,1}$/, (request, response, next) =>{
+router.post(/^\/books\/{0,1}$/, (request, response, next) => {
   // Add a book. Book id is auto-generated
   const {body} = request;
   if ("id" in body) {
-      throw("The internal property `id` is auto-generated");
-    }
+    throw ("The internal property `id` is auto-generated");
+  }
 
   if (ops.has(body.ISBN)) {
     response.status(403);
@@ -63,15 +64,15 @@ router.put(x, handleUpdate);
 function handleUpdate(request, response, next) {
   const body = request.body;
   const ID = request.params.ID || body.ISBN;
-  
+
   if (!ops.has(ID)) {
     return next();
   }
 
   if ("id" in body) {
-    throw("The internal property `id` can't be updated!");
+    throw ("The internal property `id` can't be updated!");
   }
-  
+
   const update = {
     "author": body["author"],
     "book-title": body["book-title"],
@@ -86,12 +87,12 @@ function handleUpdate(request, response, next) {
 
 // app.delete(x.slice(1), (request, response, next) =>{
 x = [/^\/books\/{0,1}$/, "/books/:ID"];
-router.delete(x, (request, response, next) =>{
+router.delete(x, (request, response, next) => {
   // delete book by id OR ISBN
   const body = request.body;
   const ID = request.params.ID || body.ISBN;
   if (request.params.ID && body.ISBN) {
-    throw("You must specify either one of ID or ISBN but not both.");
+    throw ("You must specify either one of ID or ISBN but not both.");
   }
   if (!ops.has(ID)) {
     return next();
