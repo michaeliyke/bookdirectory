@@ -21,5 +21,5 @@ REM TO start script minimized out of site use:
 REM START /MIN /K CALL "script.bat"
 
 start /MIN CMD /C  CALL "refreshmongodb.bat"
-start CMD /C CALL "mongodsetup.bat"
+start /MIN CMD /C CALL "mongodsetup.bat"
 rem START /B CMD /C CALL mongo
