@@ -10,6 +10,7 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const booksRouter = require("./routes/router");
 const ExceptionHandler = require("./routes/exception-handler");
+const {auth} = require("./controllers/authentication");
 
 const mongoose = require("mongoose");
 const Books = require("./models/books");
@@ -37,6 +38,9 @@ app.use(express.urlencoded({
   extended: false
 }));
 app.use(cookieParser());
+
+app.use(auth);
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter, booksRouter);
