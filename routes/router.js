@@ -11,7 +11,8 @@ const actions = new Actions(Books);
 const router = express.Router();
 router.use(bodyParser.json());
 
-router.get(/^\/books\/{0,1}$/, (request, response, next) => {
+/*Equivalent to /books */
+router.get("/", (request, response, next) => {
   Books.find({}).then((books) => {
     if (!books) {
       return next();
@@ -22,47 +23,57 @@ router.get(/^\/books\/{0,1}$/, (request, response, next) => {
   }, (err) => next(err)).catch(err => next(err));
 });
 
-router.get("/books/first", async (request, response, next) => {
+
+/* Equivalent to /books/first*/
+router.get("/first", async (request, response, next) => {
   const data = await actions.first(1);
   response.status(200).json(data);
   response.end();
 });
 
 
-router.get("/books/last", async (request, response, next) => {
+/* Equivalent to /books/last */
+router.get("/last", async (request, response, next) => {
   const data = await actions.last(1);
   response.status(200).json(data);
   response.end();
 });
 
 
-router.get("/books/last/ten", async (request, response, next) => {
+/*Equivalent to /books/last/ten */
+router.get("/last/ten", async (request, response, next) => {
   const data = await actions.last(10);
   response.status(200).json(data);
   response.end();
 });
 
 
-router.get("/books/first/ten", async (request, response, next) => {
+/*Equivallent to /books/first/ten */
+router.get("/first/ten", async (request, response, next) => {
   const data = await actions.first(10);
   response.status(200).json(data);
   response.end();
 });
 
-router.get("/books/first/:number", async (request, response, next) => {
+
+/* Equivalent to /books/first/:no*/
+router.get("/first/:number", async (request, response, next) => {
   const data = await actions.first(Number(request.params.number));
   response.status(200).json(data);
   response.end();
 });
 
-router.get("/books/last/:number", async (request, response, next) => {
+
+/*Equivalent to /books/last/:no*/
+router.get("/last/:number", async (request, response, next) => {
   const data = await actions.last(Number(request.params.number));
   response.status(200).json(data);
   response.end();
 });
 
 
-router.get("/books/:ID", (request, response, next) => {
+/* Equivalent to /books/:ID*/
+router.get("/:ID", (request, response, next) => {
   const params = request.params;
   let filter = {
     "id": params.ID
@@ -93,7 +104,8 @@ router.get("/books/:ID", (request, response, next) => {
 });
 
 
-router.post(/^\/books\/{0,1}$/, async (request, response, next) => {
+/*Equivalent to /books*/
+router.post("/", async (request, response, next) => {
   // Add a book. Id is auto-generated
   const {body} = request;
   if ("id" in body) {
@@ -128,8 +140,8 @@ router.post(/^\/books\/{0,1}$/, async (request, response, next) => {
 });
 
 
-const x = [/^\/books\/{0,1}$/, "/books/:ID"];
-router.put(x, handleUpdate);
+/*Equivalent to [/books, /books/:ID]*/
+router.put(["/", "/:ID"], handleUpdate);
 function handleUpdate(request, response, next) {
   const body = request.body;
   const ID = request.params.ID || body.ISBN || body.reference;
@@ -182,7 +194,8 @@ function handleUpdate(request, response, next) {
 }
 
 
-router.delete("/books/:ID", (request, response, next) => {
+/*Equivalent to /books/:ID*/
+router.delete("/:ID", (request, response, next) => {
   // delete book by id OR ISBN
   const params = request.params;
   if (!params.ID) {
@@ -213,8 +226,8 @@ router.delete("/books/:ID", (request, response, next) => {
 
 
 
-
-router.post("/books/massive", (request, response, next) => {
+/*Equivalent to /books/massive */
+router.post("/massive", (request, response, next) => {
   next();
   /*const fs = require("fs");
 

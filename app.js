@@ -47,12 +47,17 @@ app.use(session({
   saveUninitialized: false,
   store: new FileStore()
 }));
+
+
+
+
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
+
 app.use(auth);
+app.use("/books", booksRouter)
 
 app.use(express.static(path.join(__dirname, "public")));
-
-app.use("/", indexRouter, booksRouter);
-app.use("/users", usersRouter);
 app.use(ExceptionHandler);
 
 // catch 404 and forward to error handler
