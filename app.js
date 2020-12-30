@@ -4,6 +4,8 @@ const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const FileStore = require("session-file-store")(session);
 const morgan = require("morgan");
 
 const indexRouter = require("./routes/index");
@@ -37,8 +39,14 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: false
 }));
-app.use(cookieParser("9210293-18391-31893-3u1223h128;[u38?:"));
-
+// app.use(cookieParser("9210293-18391-31893-3u1223h128;[u38?:"));
+app.use(session({
+  name: "book-directory-api",
+  secret: "9210293-18391-31893-3u1223h128;[u38?:",
+  resave: false,
+  saveUninitialized: false,
+  store: new FileStore()
+}));
 app.use(auth);
 
 app.use(express.static(path.join(__dirname, "public")));

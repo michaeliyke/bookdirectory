@@ -1,11 +1,11 @@
 const {log, info, table, dir, error} = console;
 
 function auth(request, response, next) {
-  log(request.signedCookies);
+  log(request.session);
   const authHeader = request.headers.authorization;
 
-  if (request.signedCookies.user) {
-    if (request.signedCookies.user == "admin") {
+  if (request.session.user) {
+    if (request.session.user == "admin") {
       return next();
     }
     const error = new Error("You are not authenticated!");
@@ -25,9 +25,7 @@ function auth(request, response, next) {
   const auth = new Buffer.from(credentials, "base64");
   const [username, password] = auth.toString().split(":");
   if (username == "admin" && password == "password") {
-    response.cookie("user", "admin", {
-      signed: true,
-    });
+    request.session.user = "admin";
     return next();
   }
   const error = new Error("Incorrect username or password");
