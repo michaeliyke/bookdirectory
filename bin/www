@@ -3,7 +3,8 @@
 /**
  * Module dependencies.
  */
-
+const path = require("path");
+process.env.PROJ_PATH = path.resolve("./");
 var app = require("../app");
 var debug = require("debug")("books:server");
 var http = require("http");

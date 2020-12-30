@@ -3,9 +3,36 @@ const {log, info, table, dir} = console;
 const mongoose = require("mongoose");
 const {Schema} = mongoose;
 
+const uploads = {
+  image: {
+    extension: {
+      type: String,
+      default: ""
+    },
+    uploaded_path: {
+      type: String,
+      default: ""
+    },
+    mimetype: {
+      type: String,
+      default: ""
+    },
+    filename: {
+      type: String,
+      default: ""
+    },
+    size: {
+      type: Number,
+      default: 0
+    }
+  }
+};
+
 const BookDetails = {
 
-  reference: {
+  uploads,
+
+  "reference": {
     type: mongoose.ObjectId,
     default: Buffer.from("Thisisjust12")
   },
@@ -15,17 +42,13 @@ const BookDetails = {
     unique: true
   },
 
-  "author": {
-    type: String,
-  },
+  "author": String,
 
-  "book-title": {
-    type: String,
-  },
+  "book-title": String,
 
   "ISBN": {
     type: Number,
-    min: 1000000000,
+    min: 10000000,
     max: 9999999999999,
     unique: true
   }
@@ -43,3 +66,4 @@ const BookSchema = new Schema(BookDetails, options);
 const Books = mongoose.model("book", BookSchema);
 
 module.exports = Books;
+
