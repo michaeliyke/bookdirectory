@@ -37,7 +37,7 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: false
 }));
-app.use(cookieParser());
+app.use(cookieParser("9210293-18391-31893-3u1223h128;[u38?:"));
 
 app.use(auth);
 
