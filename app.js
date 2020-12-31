@@ -7,7 +7,9 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const FileStore = require("session-file-store")(session);
 const morgan = require("morgan");
+const passport = require("passport");
 
+const authenticate = require("./controllers/authenticate");
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const booksRouter = require("./routes/router");
@@ -48,6 +50,8 @@ app.use(session({
   store: new FileStore()
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 

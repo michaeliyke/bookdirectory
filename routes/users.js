@@ -1,8 +1,10 @@
+const {log, info, dir, table, error} = console;
 const ERR = require("../utils/errors");
 const ENV = require("../utils/env_");
 const express = require("express");
+const passport = require("passport");
 const bodyParser = require("body-parser");
-const Users = require("../models/user");
+const User = require("../models/user");
 const {loginAuth} = require("../controllers/authentication");
 
 const router = express.Router();
@@ -19,7 +21,7 @@ router.get("/", (req, res, next) => {
 
 
 // This means /users/login/
-router.post("/login", (request, response, next) => {
+router.post("/login", passport.authenticate("local"), (request, response, next) => {
   loginAuth(request, response, next);
 });
 
@@ -27,28 +29,28 @@ router.post("/login", (request, response, next) => {
 //This means /users/signup/
 router.post("/signup", (request, response, next) => {
   const {username, password} = request.body;
-  Users.findOne({
+  User.register(new User({
+    id: ++ENV.USER_ID,
     username,
-    password
-  }).then((user) => {
-    if (user && user != null) {
-      const error = new Error("User " + username + " already exists!");
-      error.status = 403; //Forbidden
-      return next(error);
+  }), password, (error, user) => {
+    if (error) {
+      log("Error: ", error);
+      error.status = 500; //Server error
+      response.setHeader("Content-Type", "application/json");
+      response.json({
+        error
+      });
+      return response.end();
     }
-    return Users.create({
-      id: ++ENV.USER_ID,
-      username,
-      password
-    }).then((user) => {
+    passport.authenticate("local")(request, response, () => {
       response.setHeader("Content-Type", "application/json");
       response.status(200);
-      user.status = "Registration successful!";
       response.json({
-        user
+        status: "Registration successful!",
+        success: true
       });
-    }).catch(error => next(error));
-  }).catch(error => next(error));
+    });
+  });
 });
 
 
