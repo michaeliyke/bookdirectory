@@ -21,9 +21,7 @@ router.get("/", (req, res, next) => {
 
 
 // This means /users/login/
-router.post("/login", passport.authenticate("local"), (request, response, next) => {
-  loginAuth(request, response, next);
-});
+router.post("/login", passport.authenticate("local"), loginAuth);
 
 
 //This means /users/signup/

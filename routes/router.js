@@ -1,9 +1,9 @@
 const {log} = console;
 const express = require("express");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
 const Books = require("../models/books");
 const Actions = require("../models/actions");
+const authenticate = require("../controllers/authenticate");
 
 const ENV = require("../utils/env_");
 const actions = new Actions(Books);
@@ -105,7 +105,7 @@ router.get("/:ID", (request, response, next) => {
 
 
 /*Equivalent to /books*/
-router.post("/", async (request, response, next) => {
+router.post("/", authenticate.verifyUser, async (request, response, next) => {
   // Add a book. Id is auto-generated
   const {body} = request;
   if ("id" in body) {
@@ -141,7 +141,7 @@ router.post("/", async (request, response, next) => {
 
 
 /*Equivalent to [/books, /books/:ID]*/
-router.put(["/", "/:ID"], handleUpdate);
+router.put(["/", "/:ID"], authenticate.verifyUser, handleUpdate);
 function handleUpdate(request, response, next) {
   const body = request.body;
   const ID = request.params.ID || body.ISBN || body.reference;
@@ -195,9 +195,9 @@ function handleUpdate(request, response, next) {
 
 
 /*Equivalent to /books/:ID*/
-router.delete("/:ID", (request, response, next) => {
+router.delete("/:ID", authenticate.verifyUser, (request, response, next) => {
   // delete book by id OR ISBN
-  const params = request.params;
+  const {params, body} = request;
   if (!params.ID) {
     thrower("An id or ISBN is required to delete a book record.");
   }
@@ -227,7 +227,7 @@ router.delete("/:ID", (request, response, next) => {
 
 
 /*Equivalent to /books/massive */
-router.post("/massive", (request, response, next) => {
+router.post("/massive", authenticate.verifyUser, (request, response, next) => {
   next();
   /*const fs = require("fs");
 
