@@ -11,14 +11,9 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const booksRouter = require("./routes/router");
 const ExceptionHandler = require("./routes/exception-handler");
-
 const mongoose = require("mongoose");
 const url = config.mongoUrl;
-const dbOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true
-};
+const dbOptions = {};
 
 const connect = mongoose.connect(url, dbOptions);
 connect.then((database) => {
